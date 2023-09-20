@@ -88,7 +88,6 @@ public class BikeMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log("fixed");
         MovePlayer();
     }
 

@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Header("Player")]
+    public PlayerInfo _playerInfo;
 
-    // Update is called once per frame
-    void Update()
+    public Transform player;
+    
+    [Header("Jobs")]
+    public List<JobInfo> jobsToDo;
+    public List<JobInfo> jobsComplete;
+    
+    
+
+
+    void NextJob()
     {
-        
+        if (jobsToDo.Count == 0)
+        {
+            Debug.Log("all jobs done");
+            return;
+        }
+
+        JobInfo currentJob = jobsToDo[0];
+        currentJob.BeginJob();
+        jobsComplete.Add(currentJob);
+        jobsToDo.Remove(currentJob);
     }
 }
