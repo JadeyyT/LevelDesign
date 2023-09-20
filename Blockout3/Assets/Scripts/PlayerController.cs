@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log("Mo");
         Move();
     }
 

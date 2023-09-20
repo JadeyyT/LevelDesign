@@ -16,6 +16,7 @@ public class MoveBetweenPoints : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        //rb.drag = 5;
     }
 
     // Update is called once per frame
@@ -27,13 +28,15 @@ public class MoveBetweenPoints : MonoBehaviour
     void Move()
     {
         if (patrolPoints.Count == 0) return;
-        Vector3 desPoint = patrolPoints[0].position;
-        //Debug.Log(desPoint);
-        orientation.forward = new Vector3(desPoint.x - orientation.position.x, 0,
-            desPoint.z - orientation.position.z).normalized;
-        rb.AddForce(orientation.forward * moveSpeed, ForceMode.Force);
         
-        obj.forward = Vector3.Slerp(obj.forward,orientation.forward,1);
+        Vector3 desPoint = patrolPoints[0].position;
+        
+        orientation.forward = new Vector3(desPoint.x - orientation.position.x, 0,
+                            desPoint.z - orientation.position.z).normalized;
+        
+        rb.AddForce(orientation.forward * (moveSpeed * 10f), ForceMode.Force);
+        
+        obj.forward = Vector3.Slerp(orientation.forward,obj.forward,0.5f);
         
         // limit velocity if needed
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);

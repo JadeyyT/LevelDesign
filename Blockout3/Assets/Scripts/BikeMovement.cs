@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Vector3 = UnityEngine.Vector3;
 
 public class BikeMovement : MonoBehaviour
 {
@@ -28,13 +32,15 @@ public class BikeMovement : MonoBehaviour
 
     [Header("Ground Check")]
     public float playerHeight;
-    public LayerMask whatIsGround;
+    [FormerlySerializedAs("whatIsGround")] public LayerMask whatIsRoad;
+    public LayerMask whatIsGrass;
     [SerializeField] bool grounded;
 
     public Transform orientation;
+    public Transform obj;
 
-    float horizontalInput;
-    float verticalInput;
+    [ SerializeField] float horizontalInput;
+    [ SerializeField] float verticalInput;
 
     Vector3 moveDirection;
 
@@ -49,11 +55,13 @@ public class BikeMovement : MonoBehaviour
 
         readyToJump = true;
     }
-    
+
     private void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        grounded = Physics.Raycast(transform.position - Vector3.down * playerHeight*0.5f, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsRoad) ||
+                   Physics.Raycast(transform.position - Vector3.down * playerHeight*0.5f, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGrass);
 
+            
         MyInput();
         SpeedControl();
         
@@ -62,11 +70,25 @@ public class BikeMovement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
-        
+
+        if (speeding)
+        {
+            Vector3 moveDir = orientation.forward;
+            obj.forward = Vector3.Normalize(
+                new Vector3(moveDir.x,
+                        (float)(moveDir.y * Math.Cos(45 / 180 * Math.PI) - moveDir.z * Math.Sin(45 / 180 * Math.PI)),
+                        (float)(moveDir.y * Math.Sin(45 / 180 * Math.PI) + moveDir.z * Math.Cos(45 / 180 * Math.PI))));
+
+        }
+
+        else
+            obj.forward = orientation.forward;
+
     }
 
     private void FixedUpdate()
     {
+        Debug.Log("fixed");
         MovePlayer();
     }
 
@@ -74,6 +96,8 @@ public class BikeMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        
+        
 
         speeding = Input.GetKey(sprintKey);
         
@@ -93,9 +117,9 @@ public class BikeMovement : MonoBehaviour
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput;
         if (grounded)
-            transform.Rotate(Vector3.up * (rotSpeedGround * Time.deltaTime) * horizontalInput);
+            transform.Rotate(Vector3.up * (rotSpeedGround * Time.deltaTime * horizontalInput));
         else
-            transform.Rotate(Vector3.up * (rotSpeedAir * Time.deltaTime) * horizontalInput);
+            transform.Rotate(Vector3.up * (rotSpeedAir * Time.deltaTime * horizontalInput));
 
         if (speeding)
             driveSpeed = fastSpeed;
