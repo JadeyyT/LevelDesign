@@ -40,13 +40,20 @@ public class MoveBetweenPoints : MonoBehaviour
         
         // limit velocity if needed
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (new Vector2(patrolPoints[0].position.x - orientation.position.x,patrolPoints[0].position.z - orientation.position.z).magnitude < 5f ||
+            new Vector2(patrolPoints[^1].position.x - orientation.position.x,patrolPoints[^1].position.z - orientation.position.z).magnitude < 5f)
+        {
+            Vector3 limitedVel = flatVel.normalized * 10;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+        }
+        else
         if(flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
 
-        if ((patrolPoints[0].position - orientation.position).magnitude < 0.5)
+        if (new Vector2(patrolPoints[0].position.x - orientation.position.x,patrolPoints[0].position.z - orientation.position.z).magnitude < 0.5f)
         {
             var temp = patrolPoints[0];
             patrolPoints.RemoveAt(0);
