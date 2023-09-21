@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
+    static public float stars;
     public JobInfo currentJob;
     public float timer;
-    public float stars;
+    public GameController _game;
 
     private void Update()
     {
@@ -62,6 +63,7 @@ public class PlayerInfo : MonoBehaviour
                 currentJob.EndJob();
                 CompleteJob();
                 currentJob = null;
+                _game.NextJob();
                 return;
             }
         }

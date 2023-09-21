@@ -74,10 +74,12 @@ public class BikeMovement : MonoBehaviour
         if (speeding)
         {
             Vector3 moveDir = orientation.forward;
-            obj.forward = Vector3.Normalize(
-                new Vector3(moveDir.x,
-                        (float)(moveDir.y * Math.Cos(45 / 180 * Math.PI) - moveDir.z * Math.Sin(45 / 180 * Math.PI)),
-                        (float)(moveDir.y * Math.Sin(45 / 180 * Math.PI) + moveDir.z * Math.Cos(45 / 180 * Math.PI))));
+            obj.forward = (orientation.forward.normalized + Vector3.up).normalized;
+            // obj.forward = Vector3.Normalize(
+            //     new Vector3(moveDir.x,
+            //             (float)(moveDir.y * Math.Cos(45 / 180 * Math.PI) - moveDir.z * Math.Sin(45 / 180 * Math.PI)),
+            //             (float)(moveDir.y * Math.Sin(45 / 180 * Math.PI) + moveDir.z * Math.Cos(45 / 180 * Math.PI))));
+            Debug.Log(obj.forward);
 
         }
 

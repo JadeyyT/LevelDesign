@@ -15,12 +15,23 @@ public class JobInfo : MonoBehaviour
         public int s1;
     }
     public TimePerStar timePerStar;
+
+    private Outline _outline;
     
     // Start is called before the first frame update
     void Start()
     {
+        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
+
+        _outline = GetComponent<Outline>();
+    }
+
+    public void DisplayJob()
+    {
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).gameObject.SetActive(false);
+        _outline = GetComponent<Outline>();
     }
 
     public void BeginJob()
@@ -32,8 +43,7 @@ public class JobInfo : MonoBehaviour
     public void EndJob()
     {
         Debug.Log("Job end");
-        
-        Start();// remove ------------------------------
-        
+        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
     }
 }
